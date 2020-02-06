@@ -59,13 +59,9 @@ var generateNumbersOfRange = function (min, max) {
 };
 
 // С помощью функции генерируем массив случайной длины
-var generateArrLength = function (arr) {
-  var randomArrLength = [];
-  var length = generateNumbersOfRange(1, arr.length);
-  for (var i = 0; i < length; i++) {
-    randomArrLength[i] = arr[i];
-  }
-  return randomArrLength;
+var sliceArr = function (arr) {
+  var sliceArr = arr.sort(function(a, b){ return 0.5 - Math.random()});
+  return sliceArr.length = generateNumbersOfRange(1, arr.length);
 };
 
 // С помощью функции выбираем случайное значение из массива
@@ -82,7 +78,7 @@ var fillArray = function () {
       x: (generateNumbersOfRange(MIN_COORDINATE_X, MAX_COORDINATE_X) - WIDTH_PIN / 2),
       y: (generateNumbersOfRange(MIN_COORDINATE_Y, MAX_COORDINATE_Y) - HEIGHT_PIN),
     };
-    pins[i] = {
+    pins.push({
       'author': {
         'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
@@ -95,12 +91,12 @@ var fillArray = function () {
         'guests': generateNumbersOfRange(MIN_HOUSING_GUESTS, MAX_HOUSING_GUESTS),
         'checkin': chooseValueOfArr(CHECK),
         'checkout': chooseValueOfArr(CHECK),
-        'features': generateArrLength(FEATURES),
+        'features': sliceArr(FEATURES),
         'description': 'Описание №' + (i + 1),
-        'photos': generateArrLength(PHOTOS)
+        'photos': sliceArr(PHOTOS)
       },
       'location': location
-    };
+    });
   }
 
   return pins;
