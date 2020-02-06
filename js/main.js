@@ -62,7 +62,8 @@ var generateNumbersOfRange = function (min, max) {
 var sliceArr = function (arr) {
   var sortArr = arr.sort(function (a, b) {
     return 0.5 - Math.random();
-  }).length = generateNumbersOfRange(1, arr.length);
+  });
+  sortArr.length = generateNumbersOfRange(1, arr.length);
   return sortArr;
 };
 
