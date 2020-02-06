@@ -60,8 +60,10 @@ var generateNumbersOfRange = function (min, max) {
 
 // С помощью функции генерируем массив случайной длины
 var sliceArr = function (arr) {
-  var sliceArr = arr.sort(function(a, b){ return 0.5 - Math.random()});
-  return sliceArr.length = generateNumbersOfRange(1, arr.length);
+  var sortArr = arr.sort(function (a, b) {
+    return 0.5 - Math.random();
+  }).length = generateNumbersOfRange(1, arr.length);
+  return sortArr;
 };
 
 // С помощью функции выбираем случайное значение из массива
