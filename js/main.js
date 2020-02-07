@@ -103,7 +103,7 @@ var fillArray = function () {
 fillArray();
 
 // Выведим в консоль заполненный массив из сгенерированных JS объектов
-console.log(pins);
+// console.log(pins);
 
 // В i-ый шаблон записываем входными данными из массива
 var renderPin = function (pin) {
