@@ -60,11 +60,7 @@ var generateNumbersOfRange = function (min, max) {
 
 // С помощью функции генерируем массив случайной длины
 var sliceArr = function (arr) {
-  var sortArr = arr.sort(function (a, b) {
-    return 0.5 - Math.random();
-  });
-  sortArr.length = generateNumbersOfRange(1, arr.length);
-  return sortArr;
+  return arr.slice(0, generateNumbersOfRange(1, arr.length));
 };
 
 // С помощью функции выбираем случайное значение из массива
@@ -107,7 +103,7 @@ var fillArray = function () {
 fillArray();
 
 // Выведим в консоль заполненный массив из сгенерированных JS объектов
-// console.log(pins);
+console.log(pins);
 
 // В i-ый шаблон записываем входными данными из массива
 var renderPin = function (pin) {
