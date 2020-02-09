@@ -89,7 +89,7 @@ var fillArray = function () {
         'title': 'Объявение №' + (i + 1),
         'address': location.x + ', ' + location.y,
         'price': generateNumbersOfRange(MIN_PRICE, MAX_PRICE),
-        'type': HOUSING_TYPE[generateNumbersOfRange(MIN_VALUE, HOUSING_TYPE.length)],
+        'type': HOUSING_TYPE[generateNumbersOfRange(MIN_VALUE - 1, HOUSING_TYPE.length - 1)],
         'rooms': generateNumbersOfRange(MIN_HOUSING_ROOMS, MAX_HOUSING_ROOMS),
         'guests': generateNumbersOfRange(MIN_HOUSING_GUESTS, MAX_HOUSING_GUESTS),
         'checkin': chooseValueOfArr(CHECK),
@@ -181,7 +181,26 @@ var cardPreview = function (pin) {
       popupPhoto.src = offerPhotos[i];
     }
   }
+
   cardElement.querySelector('.popup__avatar').src = pin.author.avatar;
+  // pin.author.avatar = 0;
+  // pin.offer.price = 0;
+  // pin.offer.photos = [];
+
+  // Проверка входных данных, если данных не хватает, скрываем блок
+  for (var keys in pin) {
+    // JSLint рекомендует проверить, что мы работаете с соответствующим типом ключа
+    if (pin.hasOwnProperty(keys)) {
+      if (pin[keys].length === 0 || !pin[keys]) {
+        cardElement.classList.add('hidden');
+      }
+      for (var key in pin[keys]) {
+        if (pin[keys][key].length === 0 || !pin[keys][key]) {
+          cardElement.classList.add('hidden');
+        }
+      }
+    }
+  }
 
   return cardElement;
 };
