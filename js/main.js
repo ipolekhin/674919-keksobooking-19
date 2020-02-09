@@ -1,11 +1,17 @@
 'use strict';
 
+// Главный блок
+var mapBlock = document.querySelector('.map');
+
 // Находим блок, в который будем вставлять наши метки
 var similarListElement = document.querySelector('.map__pins');
 // Находим шаблон, который будем использовать для клонирования меток
 var similarPinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
+var cardPreviewTemplate = document.querySelector('#card')
+  .content
+  .querySelector('.map__card');
 var WIDTH_PIN = 50;
 var HEIGHT_PIN = 70;
 // Оптимизация, создаем фрагмент, в котором будут хранится объекты
@@ -49,9 +55,7 @@ var MIN_COORDINATE_Y = 130;
 var MAX_COORDINATE_Y = 630;
 
 // Находим блок .map и убираем класс .map--faded
-document.querySelector('.map')
-  .classList
-  .remove('map--faded');
+mapBlock.classList.remove('map--faded');
 
 // С помощью функции генерируем случайное число от и до
 var generateNumbersOfRange = function (min, max) {
@@ -85,7 +89,7 @@ var fillArray = function () {
         'title': 'Объявение №' + (i + 1),
         'address': location.x + ', ' + location.y,
         'price': generateNumbersOfRange(MIN_PRICE, MAX_PRICE),
-        'type': HOUSING_TYPE[generateNumbersOfRange(MIN_VALUE, HOUSING_TYPE.length)],
+        'type': HOUSING_TYPE[generateNumbersOfRange(MIN_VALUE - 1, HOUSING_TYPE.length - 1)],
         'rooms': generateNumbersOfRange(MIN_HOUSING_ROOMS, MAX_HOUSING_ROOMS),
         'guests': generateNumbersOfRange(MIN_HOUSING_GUESTS, MAX_HOUSING_GUESTS),
         'checkin': chooseValueOfArr(CHECK),
@@ -128,3 +132,80 @@ for (var i = 0; i < pins.length; i++) {
 
 // Добавляем итоговый DOM элемент fragment на страницу
 similarListElement.appendChild(fragment);
+
+var cardPreview = function (pin) {
+  var cardElement = cardPreviewTemplate.cloneNode(true);
+  cardElement.querySelector('.popup__title').textContent = pin.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = pin.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
+  var offerType = pin.offer.type;
+  if (offerType === 'flat') {
+    offerType = 'Квартира';
+  } else if (offerType === 'bungalo') {
+    offerType = 'Бунгало';
+  } else if (offerType === 'house') {
+    offerType = 'Дом';
+  } else {
+    offerType = 'Дворец';
+  }
+  cardElement.querySelector('.popup__type').textContent = offerType;
+  var offerRooms = pin.offer.rooms;
+  var roomsText = ' комнаты для ';
+  if (offerRooms === 1) {
+    roomsText = ' комната для ';
+  } else if (offerRooms >= 4) {
+    roomsText = ' комнат для ';
+  }
+  var offerGuests = pin.offer.guests;
+  var guestsText = ' гостей';
+  if (offerGuests === 1) {
+    guestsText = ' гостя';
+  }
+  cardElement.querySelector('.popup__text--capacity').textContent = offerRooms + roomsText + offerGuests + guestsText;
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
+  var popupFeature = cardElement.querySelectorAll('.popup__feature');
+  for (i = 0; i < popupFeature.length; i++) {
+    if (!pin.offer.features[i]) {
+      cardElement.querySelector('.popup__features').removeChild(popupFeature[i]);
+    }
+  }
+  cardElement.querySelector('.popup__description').textContent = pin.offer.description;
+  var offerPhotos = pin.offer.photos;
+  var popupPhotos = cardElement.querySelector('.popup__photos');
+  var popupPhoto = popupPhotos.querySelector('.popup__photo');
+  for (i = 0; i < offerPhotos.length; i++) {
+    if (i > 0) {
+      var ClonePopupPhoto = popupPhotos.appendChild(popupPhoto.cloneNode());
+      ClonePopupPhoto.src = offerPhotos[i];
+    } else {
+      popupPhoto.src = offerPhotos[i];
+    }
+  }
+
+  cardElement.querySelector('.popup__avatar').src = pin.author.avatar;
+  // pin.author.avatar = 0;
+  // pin.offer.price = 0;
+  // pin.offer.photos = [];
+
+  // Проверка входных данных, если данных не хватает, скрываем блок
+  for (var keys in pin) {
+    // JSLint рекомендует проверить, что мы работаете с соответствующим типом ключа
+    if (pin.hasOwnProperty(keys)) {
+      if (pin[keys].length === 0 || !pin[keys]) {
+        cardElement.classList.add('hidden');
+      }
+      for (var key in pin[keys]) {
+        if (pin[keys][key].length === 0 || !pin[keys][key]) {
+          cardElement.classList.add('hidden');
+        }
+      }
+    }
+  }
+
+  return cardElement;
+};
+
+fragment.appendChild(cardPreview(pins[0]));
+
+// Добавляем итоговый DOM элемент fragment на страницу перед блоком .map__filters-container
+mapBlock.insertBefore(fragment, document.querySelector('.map__filters-container'));
