@@ -1,21 +1,23 @@
 'use strict';
 
+// Объявим перменную для цикла
+var i = 0;
+var ENTER_KEY = 'Enter';
 // Главный блок
 var mapBlock = document.querySelector('.map');
-
 // Находим блок, в который будем вставлять наши метки
 var similarListElement = document.querySelector('.map__pins');
 // Находим шаблон, который будем использовать для клонирования меток
-var similarPinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
-var cardPreviewTemplate = document.querySelector('#card')
-  .content
-  .querySelector('.map__card');
+// var similarPinTemplate = document.querySelector('#pin')
+//   .content
+//   .querySelector('.map__pin');
+// var cardPreviewTemplate = document.querySelector('#card')
+//   .content
+//   .querySelector('.map__card');
 var WIDTH_PIN = 50;
 var HEIGHT_PIN = 70;
 // Оптимизация, создаем фрагмент, в котором будут хранится объекты
-var fragment = document.createDocumentFragment();
+// var fragment = document.createDocumentFragment();
 // Создаем пустой массив wizards
 var pins = [];
 var MIN_VALUE = 1;
@@ -53,9 +55,11 @@ var MIN_COORDINATE_X = 0;
 var MAX_COORDINATE_X = similarListElement.offsetWidth;
 var MIN_COORDINATE_Y = 130;
 var MAX_COORDINATE_Y = 630;
-
-// Находим блок .map и убираем класс .map--faded
-mapBlock.classList.remove('map--faded');
+var mainPin = document.querySelector('.map__pin--main');
+var sharpEnd = 22;
+var adForm = document.querySelector('.ad-form');
+var fieldset = adForm.querySelectorAll('fieldset');
+var ipnutAdress = document.querySelector('#address');
 
 // С помощью функции генерируем случайное число от и до
 var generateNumbersOfRange = function (min, max) {
@@ -76,7 +80,7 @@ var chooseValueOfArr = function (arr) {
 // Функция, которая заполняет массив 'pins' данными
 var fillArray = function () {
   var location = {};
-  for (var i = 0; i < 8; i++) {
+  for (i = 0; i < 8; i++) {
     location = {
       x: (generateNumbersOfRange(MIN_COORDINATE_X, MAX_COORDINATE_X) - WIDTH_PIN / 2),
       y: (generateNumbersOfRange(MIN_COORDINATE_Y, MAX_COORDINATE_Y) - HEIGHT_PIN),
@@ -110,102 +114,204 @@ fillArray();
 // console.log(pins);
 
 // В i-ый шаблон записываем входными данными из массива
-var renderPin = function (pin) {
-  // Вызываем функцию clonNode на найденном ранее элементе
-  var pinElement = similarPinTemplate.cloneNode(true);
-  // У метки указываем координату X
-  pinElement.style.left = '' + pin.location.x + 'px';
-  // У метки указываем координату Y
-  pinElement.style.top = '' + pin.location.y + 'px';
-  // У изображения метки указываем аватар
-  pinElement.querySelector('img').src = pin.author.avatar;
-  // У изображения метки указываем альтернативный текст
-  pinElement.querySelector('img').alt = pin.offer.title;
+// var renderPin = function (pin) {
+// Вызываем функцию clonNode на найденном ранее элементе
+// var pinElement = similarPinTemplate.cloneNode(true);
+// У метки указываем координату X
+// pinElement.style.left = '' + pin.location.x + 'px';
+// У метки указываем координату Y
+// pinElement.style.top = '' + pin.location.y + 'px';
+// У изображения метки указываем аватар
+// pinElement.querySelector('img').src = pin.author.avatar;
+// У изображения метки указываем альтернативный текст
+//   pinElement.querySelector('img').alt = pin.offer.title;
+//
+//   return pinElement;
+// };
 
-  return pinElement;
-};
-
+// Функция отрисовки похожих объявлений
+// var createPins = function () {
 // В цикле собираем шаблон с метками в нашем фрагменте
-for (var i = 0; i < pins.length; i++) {
-  fragment.appendChild(renderPin(pins[i]));
-}
+// for (i = 0; i < pins.length; i++) {
+//   fragment.appendChild(renderPin(pins[i]));
+// }
 
-// Добавляем итоговый DOM элемент fragment на страницу
-similarListElement.appendChild(fragment);
+// Добавляем итоговый DOM элемент fragment на страницу.
+//   similarListElement.appendChild(fragment);
+// };
 
-var cardPreview = function (pin) {
-  var cardElement = cardPreviewTemplate.cloneNode(true);
-  cardElement.querySelector('.popup__title').textContent = pin.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = pin.offer.address;
-  cardElement.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
-  var offerType = pin.offer.type;
-  if (offerType === 'flat') {
-    offerType = 'Квартира';
-  } else if (offerType === 'bungalo') {
-    offerType = 'Бунгало';
-  } else if (offerType === 'house') {
-    offerType = 'Дом';
-  } else {
-    offerType = 'Дворец';
-  }
-  cardElement.querySelector('.popup__type').textContent = offerType;
-  var offerRooms = pin.offer.rooms;
-  var roomsText = ' комнаты для ';
-  if (offerRooms === 1) {
-    roomsText = ' комната для ';
-  } else if (offerRooms >= 4) {
-    roomsText = ' комнат для ';
-  }
-  var offerGuests = pin.offer.guests;
-  var guestsText = ' гостей';
-  if (offerGuests === 1) {
-    guestsText = ' гостя';
-  }
-  cardElement.querySelector('.popup__text--capacity').textContent = offerRooms + roomsText + offerGuests + guestsText;
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
-  var popupFeature = cardElement.querySelectorAll('.popup__feature');
-  for (i = 0; i < popupFeature.length; i++) {
-    if (!pin.offer.features[i]) {
-      cardElement.querySelector('.popup__features').removeChild(popupFeature[i]);
-    }
-  }
-  cardElement.querySelector('.popup__description').textContent = pin.offer.description;
-  var offerPhotos = pin.offer.photos;
-  var popupPhotos = cardElement.querySelector('.popup__photos');
-  var popupPhoto = popupPhotos.querySelector('.popup__photo');
-  for (i = 0; i < offerPhotos.length; i++) {
-    if (i > 0) {
-      var ClonePopupPhoto = popupPhotos.appendChild(popupPhoto.cloneNode());
-      ClonePopupPhoto.src = offerPhotos[i];
-    } else {
-      popupPhoto.src = offerPhotos[i];
-    }
-  }
+// Вызываем функцию отрисовки объявлений
+// createPins();
 
-  cardElement.querySelector('.popup__avatar').src = pin.author.avatar;
-  // pin.author.avatar = 0;
-  // pin.offer.price = 0;
-  // pin.offer.photos = [];
+// var cardPreview = function (pin) {
+//   var cardElement = cardPreviewTemplate.cloneNode(true);
+//   cardElement.querySelector('.popup__title').textContent = pin.offer.title;
+//   cardElement.querySelector('.popup__text--address').textContent = pin.offer.address;
+//   cardElement.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
+//   var offerType = pin.offer.type;
+//   if (offerType === 'flat') {
+//     offerType = 'Квартира';
+//   } else if (offerType === 'bungalo') {
+//     offerType = 'Бунгало';
+//   } else if (offerType === 'house') {
+//     offerType = 'Дом';
+//   } else {
+//     offerType = 'Дворец';
+//   }
+//   cardElement.querySelector('.popup__type').textContent = offerType;
+//   var offerRooms = pin.offer.rooms;
+//   var roomsText = ' комнаты для ';
+//   if (offerRooms === 1) {
+//     roomsText = ' комната для ';
+//   } else if (offerRooms >= 4) {
+//     roomsText = ' комнат для ';
+//   }
+//   var offerGuests = pin.offer.guests;
+//   var guestsText = ' гостей';
+//   if (offerGuests === 1) {
+//     guestsText = ' гостя';
+//   }
+//   cardElement.querySelector('.popup__text--capacity').textContent = offerRooms + roomsText + offerGuests + guestsText;
+//   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
+//   var popupFeature = cardElement.querySelectorAll('.popup__feature');
+//   for (i = 0; i < popupFeature.length; i++) {
+//     if (!pin.offer.features[i]) {
+//       cardElement.querySelector('.popup__features').removeChild(popupFeature[i]);
+//     }
+//   }
+//   cardElement.querySelector('.popup__description').textContent = pin.offer.description;
+//   var offerPhotos = pin.offer.photos;
+//   var popupPhotos = cardElement.querySelector('.popup__photos');
+//   var popupPhoto = popupPhotos.querySelector('.popup__photo');
+//   for (i = 0; i < offerPhotos.length; i++) {
+//     if (i > 0) {
+//       var ClonePopupPhoto = popupPhotos.appendChild(popupPhoto.cloneNode());
+//       ClonePopupPhoto.src = offerPhotos[i];
+//     } else {
+//       popupPhoto.src = offerPhotos[i];
+//     }
+//   }
 
-  // Проверка входных данных, если данных не хватает, скрываем блок
-  for (var keys in pin) {
-    // JSLint рекомендует проверить, что мы работаете с соответствующим типом ключа
-    if (pin.hasOwnProperty(keys)) {
-      if (pin[keys].length === 0 || !pin[keys]) {
-        cardElement.classList.add('hidden');
-      }
-      for (var key in pin[keys]) {
-        if (pin[keys][key].length === 0 || !pin[keys][key]) {
-          cardElement.classList.add('hidden');
-        }
-      }
-    }
-  }
+// cardElement.querySelector('.popup__avatar').src = pin.author.avatar;
+// pin.author.avatar = 0;
+// pin.offer.price = 0;
+// pin.offer.photos = [];
 
-  return cardElement;
-};
+// Проверка входных данных, если данных не хватает, скрываем блок
+// for (var keys in pin) {
+// JSLint рекомендует проверить, что мы работаете с соответствующим типом ключа
+//     if (pin.hasOwnProperty(keys)) {
+//       if (pin[keys].length === 0 || !pin[keys]) {
+//         cardElement.classList.add('hidden');
+//       }
+//       for (var key in pin[keys]) {
+//         if (pin[keys][key].length === 0 || !pin[keys][key]) {
+//           cardElement.classList.add('hidden');
+//         }
+//       }
+//     }
+//   }
+//
+//   return cardElement;
+// };
 
-fragment.appendChild(cardPreview(pins[0]));
+// fragment.appendChild(cardPreview(pins[0]));
 
 // Добавляем итоговый DOM элемент fragment на страницу перед блоком .map__filters-container
-mapBlock.insertBefore(fragment, document.querySelector('.map__filters-container'));
+// mapBlock.insertBefore(fragment, document.querySelector('.map__filters-container'));
+
+// Функция блокирвоки или разблокировки полей форм заполнения информации об объявлении .ad-form
+var inactiveState = function (disabled) {
+  if (disabled) {
+    for (i = 0; i < fieldset.length; i++) {
+      fieldset[i].setAttribute('disabled', disabled);
+    }
+  } else {
+    for (i = 0; i < fieldset.length; i++) {
+      fieldset[i].removeAttribute('disabled');
+    }
+  }
+};
+// Блокируем все fieldset элементы
+inactiveState(true);
+
+// Вычисление координаты
+var getCoordinateOfPin = function (active) {
+  if (active) {
+    var y = mainPin.offsetHeight + sharpEnd;
+  } else {
+    y = mainPin.offsetHeight / 2;
+  }
+
+  return Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2)
+    + ', ' + Math.round(mainPin.offsetTop + y);
+};
+
+// Устанавливаем значения поля ввода адреса
+var fillInputAdress = function (value) {
+  ipnutAdress.value = value;
+};
+fillInputAdress(getCoordinateOfPin());
+
+var activationButtonClickHandler = function () {
+  // Находим блок .map и убираем класс .map--faded
+  mapBlock.classList.remove('map--faded');
+  // У формы заполнения информации об объявлении убираем класс ad-form--disabled
+  adForm.classList.remove('ad-form--disabled');
+  // Разблокируем все fieldset элементы
+  inactiveState(false);
+  // В функцию передаем значение в активном состояние
+  fillInputAdress(getCoordinateOfPin(true));
+};
+
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    activationButtonClickHandler();
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    activationButtonClickHandler();
+  }
+});
+
+// Временно активируем карту, чтобы тестить форму!!!!!
+// activationButtonClickHandler();
+
+var roomNumber = document.querySelector('#room_number');
+var capacity = document.querySelector('#capacity');
+var form = document.querySelector('.ad-form');
+// console.log(form);
+
+// Валидность select-ов roomNumber и capacity
+var validityForm = function (value1, value2) {
+  if (value1.value === '100' && value2.value === '0' || value2.value === '100' && value1.value === '0') {
+    value1.setCustomValidity('');
+    value2.setCustomValidity('');
+  } else if (value1.value !== value2.value) {
+    value1.setCustomValidity('Количество комнат должно быть равно количеству гостей!!!');
+  } else {
+    value1.setCustomValidity('');
+    value2.setCustomValidity('');
+  }
+};
+
+roomNumber.addEventListener('change', function (evt) {
+  var target = evt.target;
+  validityForm(target, capacity);
+});
+
+capacity.addEventListener('change', function (evt) {
+  var target = evt.target;
+  validityForm(target, roomNumber);
+});
+
+form.addEventListener('submit', function (evt) {
+  // console.log('Кол-во комнат = Кол-во мест - ' + roomNumber.value + ' = ' + capacity.value);
+  if (roomNumber.value !== capacity.value) {
+    evt.preventDefault();
+  } else {
+    roomNumber.setCustomValidity('');
+  }
+});
