@@ -286,11 +286,17 @@ var form = document.querySelector('.ad-form');
 
 // Валидность select-ов roomNumber и capacity
 var validityForm = function (value1, value2) {
+  if (value1.name === 'rooms') {
+    var textError = 'Количество комнат должно быть равно количеству гостей!!!';
+  } else {
+    textError = 'Количество гостей должно быть равно количеству комнат!!!';
+  }
   if (value1.value === '100' && value2.value === '0' || value2.value === '100' && value1.value === '0') {
     value1.setCustomValidity('');
     value2.setCustomValidity('');
   } else if (value1.value !== value2.value) {
-    value1.setCustomValidity('Количество комнат должно быть равно количеству гостей!!!');
+    value1.setCustomValidity(textError);
+    value2.setCustomValidity('');
   } else {
     value1.setCustomValidity('');
     value2.setCustomValidity('');
@@ -308,10 +314,25 @@ capacity.addEventListener('change', function (evt) {
 });
 
 form.addEventListener('submit', function (evt) {
+  // временно для теста
   // console.log('Кол-во комнат = Кол-во мест - ' + roomNumber.value + ' = ' + capacity.value);
-  if (roomNumber.value !== capacity.value) {
+  if (roomNumber.value === '100' && capacity.value === '0' || roomNumber.value === '100' && capacity.value === '0') {
+    roomNumber.setCustomValidity('');
+    capacity.setCustomValidity('');
+    // {временно для теста
+    // console.log('форму отправляем');
+    // evt.preventDefault();
+    // временно для теста}
+  } else if (roomNumber.value !== capacity.value) {
     evt.preventDefault();
+    // временно для теста
+    // console.log('форму не отправляем');
   } else {
     roomNumber.setCustomValidity('');
+    capacity.setCustomValidity('');
+    // {временно для теста
+    // console.log('форму отправляем');
+    // evt.preventDefault();
+    // временно для теста}
   }
 });
