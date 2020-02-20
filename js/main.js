@@ -18,7 +18,8 @@ var cardPreviewTemplate = document.querySelector('#card')
 var WIDTH_PIN = 50;
 var HEIGHT_PIN = 70;
 // Оптимизация, создаем фрагмент, в котором будут хранится объекты
-var fragment = document.createDocumentFragment();
+var fragmentPins = document.createDocumentFragment();
+var fragmentCard = document.createDocumentFragment();
 // Создаем пустой массив wizards
 var pins = [];
 var MIN_VALUE = 1;
@@ -134,11 +135,11 @@ var renderPin = function (pin) {
 var createPins = function () {
   // В цикле собираем шаблон с метками в нашем фрагменте
   for (i = 0; i < pins.length; i++) {
-    fragment.appendChild(renderPin(pins[i]));
+    fragmentPins.appendChild(renderPin(pins[i]));
   }
 
-  // Добавляем итоговый DOM элемент fragment на страницу.
-  similarListElement.appendChild(fragment);
+  // Добавляем итоговый DOM элемент fragmentPins на страницу.
+  similarListElement.appendChild(fragmentPins);
 };
 
 var cardPreview = function (pin) {
@@ -219,15 +220,22 @@ var closeMapCard = function () {
   var mapCard = document.querySelector('.map__card ');
   if (mapCard) {
     mapCard.remove();
+    document.removeEventListener('keydown', popupEscHendler);
+  }
+};
+
+var popupEscHendler = function (evt) {
+  if (evt.key === ESC_KEY) {
+    closeMapCard();
   }
 };
 
 // Открыть карточку объявления
 var openMapCard = function (numberPin) {
-  fragment.appendChild(cardPreview(pins[numberPin]));
+  fragmentCard.appendChild(cardPreview(pins[numberPin]));
 
-  // Добавляем итоговый DOM элемент fragment на страницу перед блоком .map__filters-container
-  mapBlock.insertBefore(fragment, document.querySelector('.map__filters-container'));
+  // Добавляем итоговый DOM элемент fragmentCard на страницу перед блоком .map__filters-container
+  mapBlock.insertBefore(fragmentCard, document.querySelector('.map__filters-container'));
 
   var popupClose = document.querySelector('.map__card')
     .querySelector('.popup__close');
@@ -236,11 +244,14 @@ var openMapCard = function (numberPin) {
       closeMapCard();
     }
   });
+
   popupClose.addEventListener('keydown', function (evt) {
-    if (evt.key === ESC_KEY || evt.key === ENTER_KEY) {
+    if (evt.key === ENTER_KEY) {
       closeMapCard();
     }
   });
+
+  document.addEventListener('keydown', popupEscHendler);
 };
 
 // Функция блокирвоки или разблокировки полей форм заполнения информации об объявлении .ad-form
@@ -310,6 +321,7 @@ var interactionPinHandler = function (evt) {
 };
 
 similarListElement.addEventListener('mousedown', function (evt) {
+  console.log('мышка');
   if (evt.button === 0) {
     interactionPinHandler(evt);
   }
@@ -333,81 +345,113 @@ var timeOut = document.querySelector('#timeout');
 var roomNumber = document.querySelector('#room_number');
 var capacity = document.querySelector('#capacity');
 
+var checkTitle = function (evt) {
+  if (evt.target.validity.tooShort) {
+    evt.target.setCustomValidity('Минимальная длина — 30 символов');
+  } else if (evt.target.validity.tooLong) {
+    evt.target.setCustomValidity('Максимальная длина — 100 символов');
+  } else if (evt.target.validity.valueMissing) {
+    evt.target.setCustomValidity('Обязательное поле');
+  } else {
+    evt.target.setCustomValidity('');
+  }
+};
+
+var checkType = function (evt) {
+  switch (evt.target.value) {
+    case 'bungalo':
+      inputPriceForm.min = 0;
+      break;
+    case 'flat':
+      inputPriceForm.min = 1000;
+      break;
+    case 'house':
+      inputPriceForm.min = 5000;
+      break;
+    case 'palace':
+      inputPriceForm.min = 10000;
+      break;
+    default:
+      inputPriceForm.min = 1000;
+      break;
+  }
+};
+
+var checkPrice = function (evt) {
+  if (evt.target.validity.rangeUnderflow) {
+    evt.target.setCustomValidity('Минимальное значение — ' + evt.target.min);
+  } else if (evt.target.validity.rangeOverflow) {
+    evt.target.setCustomValidity('Максимальное значение — 1 000 000');
+  } else if (evt.target.validity.typeMismatch) {
+    evt.target.setCustomValidity('Числовое поле');
+  } else if (evt.target.validity.valueMissing) {
+    evt.target.setCustomValidity('Обязательное поле');
+  } else {
+    evt.target.setCustomValidity('');
+  }
+};
+
+var checkTimeIn = function (evt) {
+  timeOut.selectedIndex = evt.target.selectedIndex;
+};
+
+var checkTimeOut = function (evt) {
+  timeIn.selectedIndex = evt.target.selectedIndex;
+};
+
+var checkRoomNumber = function () {
+  if (roomNumber.value === '100' && capacity.value === '0') {
+    roomNumber.setCustomValidity('');
+    capacity.setCustomValidity('');
+  } else if (roomNumber.value !== capacity.value) {
+    roomNumber.setCustomValidity('Количество комнат должно быть равно количеству гостей!!!');
+    capacity.setCustomValidity('');
+  } else {
+    roomNumber.setCustomValidity('');
+    capacity.setCustomValidity('');
+  }
+};
+
+var checkCapacity = function () {
+  if (roomNumber.value === '100' && capacity.value === '0') {
+    capacity.setCustomValidity('');
+    roomNumber.setCustomValidity('');
+  } else if (capacity.value !== roomNumber.value) {
+    capacity.setCustomValidity('Количество гостей должно быть равно количеству комнат!!!');
+    roomNumber.setCustomValidity('');
+  } else {
+    capacity.setCustomValidity('');
+    roomNumber.setCustomValidity('');
+  }
+};
+
 var formChangeHandler = function (evt) {
   if (evt.target.id === inputTitleForm.id) {
-    if (evt.target.validity.tooShort) {
-      evt.target.setCustomValidity('Минимальная длина — 30 символов');
-    } else if (evt.target.validity.tooLong) {
-      evt.target.setCustomValidity('Максимальная длина — 100 символов');
-    } else if (evt.target.validity.valueMissing) {
-      evt.target.setCustomValidity('Обязательное поле');
-    } else {
-      evt.target.setCustomValidity('');
-    }
+    checkTitle(evt);
   }
 
   if (evt.target.id === selectTypeForm.id) {
-    switch (evt.target.value) {
-      case 'bungalo':
-        inputPriceForm.min = 0;
-        break;
-      case 'flat':
-        inputPriceForm.min = 1000;
-        break;
-      case 'house':
-        inputPriceForm.min = 5000;
-        break;
-      case 'palace':
-        inputPriceForm.min = 10000;
-        break;
-      default:
-        inputPriceForm.min = 1000;
-        break;
-    }
+    checkType(evt);
   }
 
   if (evt.target.id === inputPriceForm.id) {
-    if (evt.target.validity.rangeUnderflow) {
-      evt.target.setCustomValidity('Минимальное значение — ' + evt.target.min);
-    } else if (evt.target.validity.rangeOverflow) {
-      evt.target.setCustomValidity('Максимальное значение — 1 000 000');
-    } else if (evt.target.validity.typeMismatch) {
-      evt.target.setCustomValidity('Числовое поле');
-    } else if (evt.target.validity.valueMissing) {
-      evt.target.setCustomValidity('Обязательное поле');
-    } else {
-      evt.target.setCustomValidity('');
-    }
+    checkPrice(evt);
   }
 
   if (evt.target.id === timeIn.id) {
-    timeOut.selectedIndex = evt.target.selectedIndex;
-  } else if (evt.target.id === timeOut.id) {
-    timeIn.selectedIndex = evt.target.selectedIndex;
+    checkTimeIn(evt);
+  }
+
+  if (evt.target.id === timeOut.id) {
+    checkTimeOut(evt);
   }
 
   if (evt.target.id === roomNumber.id) {
-    if (roomNumber.value === '100' && capacity.value === '0') {
-      roomNumber.setCustomValidity('');
-      capacity.setCustomValidity('');
-    } else if (roomNumber.value !== capacity.value) {
-      roomNumber.setCustomValidity('Количество комнат должно быть равно количеству гостей!!!');
-      capacity.setCustomValidity('');
-    } else {
-      roomNumber.setCustomValidity('');
-      capacity.setCustomValidity('');
-    }
-  } else if (evt.target.id === capacity.id) {
-    if (roomNumber.value === '100' && capacity.value === '0') {
-      capacity.setCustomValidity('');
-      roomNumber.setCustomValidity('');
-    } else if (capacity.value !== roomNumber.value) {
-      capacity.setCustomValidity('Количество гостей должно быть равно количеству комнат!!!');
-      roomNumber.setCustomValidity('');
-    } else {
-      capacity.setCustomValidity('');
-      roomNumber.setCustomValidity('');
-    }
+    checkRoomNumber();
+  }
+
+  if (evt.target.id === capacity.id) {
+    checkCapacity();
   }
 };
 
