@@ -321,7 +321,7 @@ var interactionPinHandler = function (evt) {
 };
 
 similarListElement.addEventListener('mousedown', function (evt) {
-  console.log('мышка');
+  // console.log('мышка');
   if (evt.button === 0) {
     interactionPinHandler(evt);
   }
