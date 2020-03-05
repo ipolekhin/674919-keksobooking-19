@@ -2,7 +2,6 @@
 
 (function () {
   // Объявим перменную для цикла
-  var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
   // Главный блок
   var mapBlock = document.querySelector('.map');
@@ -14,7 +13,6 @@
     .querySelector('.map__pin');
   // Оптимизация, создаем фрагмент, в котором будут хранится объекты
   var fragmentPins = document.createDocumentFragment();
-  var fragmentCard = document.createDocumentFragment();
   var mainPin = document.querySelector('.map__pin--main');
   var sharpEnd = 22;
   var addForm = document.querySelector('.ad-form');
@@ -46,45 +44,6 @@
     similarListElement.appendChild(fragmentPins);
   };
 
-  // Закрыть карточку объявления
-  var closeMapCard = function () {
-    var mapCard = document.querySelector('.map__card ');
-    if (mapCard) {
-      mapCard.remove();
-      document.removeEventListener('keydown', popupEscHendler);
-    }
-  };
-
-  var popupEscHendler = function (evt) {
-    if (evt.key === ESC_KEY) {
-      closeMapCard();
-    }
-  };
-
-  // Открыть карточку объявления
-  var openMapCard = function (numberPin) {
-    fragmentCard.appendChild(window.card.cardPreview(window.pin.pins[numberPin]));
-
-    // Добавляем итоговый DOM элемент fragmentCard на страницу перед блоком .map__filters-container
-    mapBlock.insertBefore(fragmentCard, document.querySelector('.map__filters-container'));
-
-    var popupClose = document.querySelector('.map__card')
-      .querySelector('.popup__close');
-    popupClose.addEventListener('mousedown', function (evt) {
-      if (evt.button === 0) {
-        closeMapCard();
-      }
-    });
-
-    popupClose.addEventListener('keydown', function (evt) {
-      if (evt.key === ENTER_KEY) {
-        closeMapCard();
-      }
-    });
-
-    document.addEventListener('keydown', popupEscHendler);
-  };
-
   // Вычисление координаты
   window.map = {
     getCoordinateOfPin: function (active) {
@@ -112,36 +71,28 @@
     createPins();
   };
 
-  var interactionPinHandler = function (evt) {
-    if (mapBlock.classList.contains('map--faded')) {
-      // Активация карты
+  // Активация карты и формы и создаем обрабочтки move на главный pin
+  var mapActivation = function (evt) {
+    if (evt.button === 0 || evt.key === ENTER_KEY) {
       activationButtonClickHandler();
-    }
-
-    // Открытие карточки объявления
-    if (evt.target && evt.target.closest('button[type="button"]')) {
-      // Нетривиальное нахождение номера объекта
-      if (evt.target.src) {
-        var numberPin = parseInt(evt.target.src.slice(-5), 16) - 1;
-      } else {
-        numberPin = parseInt(evt.target.children[0].src.slice(-5), 16) - 1;
-      }
-      // console.log(numberPin);
-      closeMapCard();
-      openMapCard(numberPin);
+      mainPin.removeEventListener('mousedown', mapActivation);
+      mainPin.removeEventListener('keydown', mapActivation);
+      window.move.mainPin();
     }
   };
 
+  mainPin.addEventListener('mousedown', mapActivation);
+  mainPin.addEventListener('keydown', mapActivation);
+
   similarListElement.addEventListener('mousedown', function (evt) {
-    // console.log('мышка');
     if (evt.button === 0) {
-      interactionPinHandler(evt);
+      window.card.interactionPinHandler(evt);
     }
   });
 
   similarListElement.addEventListener('keydown', function (evt) {
     if (evt.key === ENTER_KEY) {
-      interactionPinHandler(evt);
+      window.card.interactionPinHandler(evt);
     }
   });
 })();
