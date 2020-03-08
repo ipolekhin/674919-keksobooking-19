@@ -25,8 +25,8 @@
     var location = {};
     for (var i = 0; i < 8; i++) {
       location = {
-        x: (generateNumbersOfRange(window.data.MIN_COORDINATE_X, window.data.MAX_COORDINATE_X) - window.data.WIDTH_PIN / 2),
-        y: (generateNumbersOfRange(window.data.MIN_COORDINATE_Y, window.data.MAX_COORDINATE_Y) - window.data.HEIGHT_PIN),
+        x: (generateNumbersOfRange(window.constants.BORDER_LEFT, window.constants.BORDER_RIGHT) - window.data.WIDTH_PIN / 2),
+        y: (generateNumbersOfRange(window.constants.BORDER_TOP, window.constants.BORDER_BOTTOM) - window.data.HEIGHT_PIN),
       };
       pins.push({
         'author': {

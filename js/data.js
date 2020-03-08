@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  // Находим блок, в который будем вставлять наши метки, для вычисления ширины
-  var similarListElement = document.querySelector('.map__pins');
   var WIDTH_PIN = 50;
   var HEIGHT_PIN = 70;
   var MIN_VALUE = 1;
@@ -36,10 +34,6 @@
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
   ];
-  var MIN_COORDINATE_X = 0;
-  var MAX_COORDINATE_X = similarListElement.offsetWidth;
-  var MIN_COORDINATE_Y = 130;
-  var MAX_COORDINATE_Y = 630;
 
   window.data = {
     WIDTH_PIN: WIDTH_PIN,
@@ -55,9 +49,5 @@
     CHECK: CHECK,
     FEATURES: FEATURES,
     PHOTOS: PHOTOS,
-    MIN_COORDINATE_X: MIN_COORDINATE_X,
-    MAX_COORDINATE_X: MAX_COORDINATE_X,
-    MIN_COORDINATE_Y: MIN_COORDINATE_Y,
-    MAX_COORDINATE_Y: MAX_COORDINATE_Y,
   };
 })();

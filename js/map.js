@@ -48,12 +48,12 @@
   window.map = {
     getCoordinateOfPin: function (active) {
       if (active) {
-        var y = mainPin.offsetHeight + sharpEnd;
+        var y = window.constants.HEIGHT_MAIN_PIN + sharpEnd;
       } else {
-        y = mainPin.offsetHeight / 2;
+        y = window.constants.HEIGHT_MAIN_PIN / 2;
       }
 
-      return Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2)
+      return Math.round(mainPin.offsetLeft + window.constants.WIDTH_MAIN_PIN / 2)
         + ', ' + Math.round(mainPin.offsetTop + y);
     },
   };
