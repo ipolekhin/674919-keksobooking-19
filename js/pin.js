@@ -21,7 +21,7 @@
   };
 
   // Функция, которая заполняет массив 'pins' данными
-  (function () {
+  var mocksData = function () {
     var location = {};
     for (var i = 0; i < 8; i++) {
       location = {
@@ -50,11 +50,25 @@
     }
 
     return pins;
-  })();
-
-  window.pin = {
-    pins: pins,
   };
+
+  var sendData = function (data) {
+    window.pin = {
+      pins: data,
+    };
+  };
+
+  var onError = function () {
+    mocksData();
+    sendData(pins);
+  };
+
+  var onSuccess = function (data) {
+    sendData(data);
+  };
+
+  window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);
+
 
   // Выведим в консоль заполненный массив из сгенерированных JS объектов
   // console.log(pins);
