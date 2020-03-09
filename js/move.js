@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var mapBlock = document.querySelector('.map');
   var pin = document.querySelector('.map__pin--main');
 
   window.move = {
@@ -16,40 +15,40 @@
           };
         }
 
-        var onMouseMove = function (moveEvt) {
-          moveEvt.preventDefault();
+        var onMouseMove = function (MouseMoveEvent) {
+          MouseMoveEvent.preventDefault();
           window.form.fillInputAdress(window.map.getCoordinateOfPin(true));
 
           var shift = {
-            x: startCoords.x - moveEvt.clientX,
-            y: startCoords.y - moveEvt.clientY
+            x: startCoords.x - MouseMoveEvent.clientX,
+            y: startCoords.y - MouseMoveEvent.clientY
           };
 
           var shiftTop = (pin.offsetTop - shift.y);
           var shiftLeft = (pin.offsetLeft - shift.x);
 
           startCoords = {
-            x: moveEvt.clientX,
-            y: moveEvt.clientY
+            x: MouseMoveEvent.clientX,
+            y: MouseMoveEvent.clientY
           };
-          if (shiftTop < 130) {
-            shiftTop = 130;
-          } else if (shiftTop > 630) {
-            shiftTop = 630;
+          if (shiftTop < window.constants.BORDER_TOP) {
+            shiftTop = window.constants.BORDER_TOP;
+          } else if (shiftTop > window.constants.BORDER_BOTTOM) {
+            shiftTop = window.constants.BORDER_BOTTOM;
           }
 
-          if (shiftLeft < 0) {
-            shiftLeft = 0;
-          } else if (shiftLeft > mapBlock.offsetWidth - pin.offsetWidth) {
-            shiftLeft = mapBlock.offsetWidth - pin.offsetWidth;
+          if (shiftLeft < window.constants.BORDER_LEFT) {
+            shiftLeft = window.constants.BORDER_LEFT;
+          } else if (shiftLeft > window.constants.BORDER_RIGHT - window.constants.WIDTH_MAIN_PIN) {
+            shiftLeft = window.constants.BORDER_RIGHT - window.constants.WIDTH_MAIN_PIN;
           }
 
           pin.style.top = shiftTop + 'px';
           pin.style.left = shiftLeft + 'px';
         };
 
-        var onMouseUp = function (upEvt) {
-          upEvt.preventDefault();
+        var onMouseUp = function (MouseUpEvent) {
+          MouseUpEvent.preventDefault();
           window.form.fillInputAdress(window.map.getCoordinateOfPin(true));
 
           document.removeEventListener('mousemove', onMouseMove);

@@ -21,12 +21,12 @@
   };
 
   // Функция, которая заполняет массив 'pins' данными
-  (function () {
+  var mocksData = function () {
     var location = {};
     for (var i = 0; i < 8; i++) {
       location = {
-        x: (generateNumbersOfRange(window.data.MIN_COORDINATE_X, window.data.MAX_COORDINATE_X) - window.data.WIDTH_PIN / 2),
-        y: (generateNumbersOfRange(window.data.MIN_COORDINATE_Y, window.data.MAX_COORDINATE_Y) - window.data.HEIGHT_PIN),
+        x: (generateNumbersOfRange(window.constants.BORDER_LEFT, window.constants.BORDER_RIGHT) - window.data.WIDTH_PIN / 2),
+        y: (generateNumbersOfRange(window.constants.BORDER_TOP, window.constants.BORDER_BOTTOM) - window.data.HEIGHT_PIN),
       };
       pins.push({
         'author': {
@@ -50,11 +50,25 @@
     }
 
     return pins;
-  })();
-
-  window.pin = {
-    pins: pins,
   };
+
+  var sendData = function (data) {
+    window.pin = {
+      pins: data,
+    };
+  };
+
+  var onError = function () {
+    mocksData();
+    sendData(pins);
+  };
+
+  var onSuccess = function (data) {
+    sendData(data);
+  };
+
+  window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);
+
 
   // Выведим в консоль заполненный массив из сгенерированных JS объектов
   // console.log(pins);
