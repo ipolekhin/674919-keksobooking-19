@@ -1,12 +1,14 @@
 'use strict';
 
 (function () {
+  var mapBlock = document.querySelector('.map');
   var pin = document.querySelector('.map__pin--main');
 
   window.move = {
     mainPin: function () {
       var moveHandler = function (evt) {
         evt.preventDefault();
+        var dragged = false;
 
         if (evt.button === 0) {
           var startCoords = {
@@ -17,6 +19,7 @@
 
         var onMouseMove = function (MouseMoveEvent) {
           MouseMoveEvent.preventDefault();
+          dragged = true;
           window.form.fillInputAdress(window.map.getCoordinateOfPin(true));
 
           var shift = {
@@ -31,6 +34,7 @@
             x: MouseMoveEvent.clientX,
             y: MouseMoveEvent.clientY
           };
+
           if (shiftTop < window.constants.BORDER_TOP) {
             shiftTop = window.constants.BORDER_TOP;
           } else if (shiftTop > window.constants.BORDER_BOTTOM) {
@@ -49,10 +53,16 @@
 
         var onMouseUp = function (MouseUpEvent) {
           MouseUpEvent.preventDefault();
+
           window.form.fillInputAdress(window.map.getCoordinateOfPin(true));
 
           document.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseup', onMouseUp);
+
+          if (!dragged && mapBlock.classList.contains('map--faded')) {
+            window.map.activationButtonClickHandler();
+            // console.log(window.pin.pins);
+          }
         };
 
         document.addEventListener('mousemove', onMouseMove);

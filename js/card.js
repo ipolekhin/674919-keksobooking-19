@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEY = 'Escape';
-  var ENTER_KEY = 'Enter';
   var mapBlock = document.querySelector('.map');
   var cardPreviewTemplate = document.querySelector('#card')
     .content
@@ -93,18 +91,9 @@
     cardElement.querySelector('.popup__avatar').src = pin.author.avatar;
   };
 
-  // Закрыть карточку объявления
-  var closeMapCard = function () {
-    var mapCard = document.querySelector('.map__card ');
-    if (mapCard) {
-      mapCard.remove();
-      document.removeEventListener('keydown', popupEscHendler);
-    }
-  };
-
   var popupEscHendler = function (evt) {
-    if (evt.key === ESC_KEY) {
-      closeMapCard();
+    if (evt.key === window.constants.ESC_KEY) {
+      window.card.closeMapCard();
     }
   };
 
@@ -119,13 +108,13 @@
       .querySelector('.popup__close');
     popupClose.addEventListener('mousedown', function (evt) {
       if (evt.button === 0) {
-        closeMapCard();
+        window.card.closeMapCard();
       }
     });
 
     popupClose.addEventListener('keydown', function (evt) {
-      if (evt.key === ENTER_KEY) {
-        closeMapCard();
+      if (evt.key === window.constants.ENTER_KEY) {
+        window.card.closeMapCard();
       }
     });
 
@@ -147,11 +136,6 @@
       addPhotosToCard(cardElement, pin);
       addAvatarToCard(cardElement, pin);
 
-      // Для теста нулевых данных
-      // pin.author.avatar = 0;
-      // pin.offer.price = 0;
-      // pin.offer.photos = [];
-
       // Проверка входных данных, если данных не хватает, скрываем блок
       for (var keys in pin) {
         // JSLint рекомендует проверить, что мы работаете с соответствующим типом ключа
@@ -170,19 +154,26 @@
       return cardElement;
     },
 
-
     interactionPinHandler: function (evt) {
       // Открытие карточки объявления
       if (evt.target && evt.target.closest('button[type="button"]')) {
-        // Нетривиальное нахождение номера объекта
         if (evt.target.src) {
-          var numberPin = parseInt(evt.target.src.slice(-5), 16) - 1;
+          var numberPin = parseInt(evt.target.dataset.number, 10);
         } else {
-          numberPin = parseInt(evt.target.children[0].src.slice(-5), 16) - 1;
+          numberPin = parseInt(evt.target.children[0].dataset.number, 10);
         }
         // console.log(numberPin);
-        closeMapCard();
+        window.card.closeMapCard();
         openMapCard(numberPin);
+      }
+    },
+
+    // Закрыть карточку объявления
+    closeMapCard: function () {
+      var mapCard = document.querySelector('.map__card ');
+      if (mapCard) {
+        mapCard.remove();
+        document.removeEventListener('keydown', popupEscHendler);
       }
     },
   };
