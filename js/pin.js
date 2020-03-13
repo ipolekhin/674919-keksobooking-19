@@ -52,7 +52,8 @@
     return pins;
   };
 
-  var sendData = function (data) {
+  var recordData = function (data) {
+    // console.log('данные загружены');
     window.pin = {
       pins: data,
     };
@@ -60,16 +61,15 @@
 
   var onError = function () {
     mocksData();
-    sendData(pins);
+    recordData(pins);
   };
 
   var onSuccess = function (data) {
-    sendData(data);
+    recordData(data);
   };
 
   window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);
 
-
   // Выведим в консоль заполненный массив из сгенерированных JS объектов
-  // console.log(pins);
+  // console.log(window.pin.pins);
 })();

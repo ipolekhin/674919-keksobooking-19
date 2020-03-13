@@ -2,6 +2,8 @@
 
 (function () {
   var addForm = document.querySelector('.ad-form');
+  var submitButton = addForm.querySelector('.ad-form__submit');
+  var resetButton = addForm.querySelector('.ad-form__reset');
   var fieldset = addForm.querySelectorAll('fieldset');
   var ipnutAdress = addForm.querySelector('#address');
   var inputTitleForm = addForm.querySelector('#title');
@@ -13,7 +15,7 @@
   var capacity = addForm.querySelector('#capacity');
 
   // Временно активируем карту, чтобы тестить форму!!!!!
-  // activationButtonClickHandler();
+  // window.map.activationButtonClickHandler();
 
   var checkTitle = function (evt) {
     if (evt.target.validity.tooShort) {
@@ -128,28 +130,39 @@
   addForm.addEventListener('change', formChangeHandler);
   // console.log(addForm);
 
+  var startButtonsInteractive = function () {
+    submitButton.textContent = 'Данные отправляются...';
+    submitButton.disabled = true;
+  };
+
+  var endButtonsInteractive = function () {
+    submitButton.textContent = 'Опубликовать';
+    submitButton.disabled = false;
+  };
+
+  var onError = function () {
+    endButtonsInteractive();
+  };
+
+  var onSuccess = function () {
+    roomNumber.setCustomValidity('');
+    capacity.setCustomValidity('');
+
+    window.map.loadInactivePage();
+
+    endButtonsInteractive();
+  };
+
   addForm.addEventListener('submit', function (evt) {
-    // временно для теста
-    // console.log('Кол-во комнат = Кол-во мест - ' + roomNumber.value + ' = ' + capacity.value);
-    if (roomNumber.value === '100' && capacity.value === '0' || roomNumber.value === '100' && capacity.value === '0') {
-      roomNumber.setCustomValidity('');
-      capacity.setCustomValidity('');
-      // {временно для теста
-      // console.log('форму отправили не для гостей');
-      // evt.preventDefault();
-      // временно для теста}
-    } else if (roomNumber.value !== capacity.value) {
-      evt.preventDefault();
-      // временно для теста
-      // console.log('форму не отправляем');
-    } else {
-      roomNumber.setCustomValidity('');
-      capacity.setCustomValidity('');
-      // {временно для теста
-      // console.log('форму отправили');
-      // evt.preventDefault();
-      // временно для теста}
-    }
+    evt.preventDefault();
+
+    startButtonsInteractive();
+
+    window.upload(new FormData(addForm), onSuccess, onError);
+  });
+
+  resetButton.addEventListener('click', function () {
+    setTimeout(window.map.loadInactivePage, 500);
   });
 
   window.form = {
@@ -169,7 +182,4 @@
     },
   };
 
-  // Блокируем все fieldset элементы
-  window.form.inactiveState(true);
-  window.form.fillInputAdress(window.map.getCoordinateOfPin());
 })();
