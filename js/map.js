@@ -33,17 +33,6 @@
     return pinElement;
   };
 
-  // Функция отрисовки похожих объявлений
-  var createPins = function () {
-    // В цикле собираем шаблон с метками в нашем фрагменте
-    for (var i = 0; i < window.pin.pins.length; i++) {
-      fragmentPins.appendChild(renderPin(window.pin.pins[i], i));
-    }
-
-    // Добавляем итоговый DOM элемент fragmentPins на страницу.
-    similarListElement.appendChild(fragmentPins);
-  };
-
   // Активация карты и формы и создаем обрабочтки move на главный pin
   var mapActivation = function (evt) {
     if (evt.key === window.constants.ENTER_KEY) {
@@ -72,6 +61,17 @@
   window.move.mainPin();
 
   window.map = {
+    // Функция отрисовки похожих объявлений
+    createPins: function (data) {
+      // В цикле собираем шаблон с метками в нашем фрагменте
+      for (var i = 0; i < data.length; i++) {
+        fragmentPins.appendChild(renderPin(data[i], i));
+      }
+
+      // Добавляем итоговый DOM элемент fragmentPins на страницу.
+      similarListElement.appendChild(fragmentPins);
+    },
+
     activationButtonClickHandler: function () {
       // Находим блок .map и убираем класс .map--faded
       mapBlock.classList.remove('map--faded');
@@ -82,7 +82,7 @@
       // В функцию передаем значение в активном состояние
       window.form.fillInputAdress(window.map.getCoordinateOfPin(true));
       // Вызываем функцию отрисовки pins (маркеры объявлений)
-      createPins();
+      window.map.createPins(window.pin.pins);
     },
 
     // Вычисление координаты
@@ -123,5 +123,4 @@
   };
 
   window.map.loadInactivePage();
-
 })();

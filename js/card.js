@@ -7,6 +7,14 @@
     .querySelector('.map__card');
   var fragmentCard = document.createDocumentFragment();
 
+  // Словарь
+  var classListType = {
+    'flat': 'Квартира',
+    'bungalo': 'Бунгало',
+    'house': 'Дом',
+    'palace': 'Дворец',
+  };
+
   var addTitleToCard = function (cardElement, pin) {
     cardElement.querySelector('.popup__title').textContent = pin.offer.title;
   };
@@ -20,22 +28,7 @@
   };
 
   var addTypeToCard = function (cardElement, pin) {
-    var offerType = pin.offer.type;
-    switch (offerType) {
-      case 'flat':
-        offerType = 'Квартира';
-        break;
-      case 'bungalo':
-        offerType = 'Бунгало';
-        break;
-      case 'house':
-        offerType = 'Дом';
-        break;
-      default:
-        offerType = 'Дворец';
-        break;
-    }
-    cardElement.querySelector('.popup__type').textContent = offerType;
+    cardElement.querySelector('.popup__type').textContent = classListType[pin.offer.type];
   };
 
   var addRoomsAndGuestsToCard = function (cardElement, pin) {
