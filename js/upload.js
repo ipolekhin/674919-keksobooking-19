@@ -15,7 +15,7 @@
     .querySelector('.success');
 
   var closeMessage = function (evt) {
-    if (evt.button === 0 || evt.key === window.constants.ESC_KEY) {
+    if (evt.button === 0 || evt.key === window.constants.Key.ESC) {
       document.removeEventListener('mousedown', closeMessage);
       document.removeEventListener('keydown', closeMessage);
       main.lastChild.remove();
@@ -46,11 +46,11 @@
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      onError(window.message.Request.ERROR);
     });
 
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      onError(window.message.Request.TIMEOUT + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIMEOUT_IN_MS;

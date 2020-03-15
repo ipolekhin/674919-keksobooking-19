@@ -35,7 +35,7 @@
 
   // Активация карты и формы и создаем обрабочтки move на главный pin
   var mapActivation = function (evt) {
-    if (evt.key === window.constants.ENTER_KEY) {
+    if (evt.key === window.constants.Key.ENTER) {
       window.map.activationButtonClickHandler();
       mainPin.removeEventListener('keydown', mapActivation);
     }
@@ -48,7 +48,7 @@
   });
 
   similarListElement.addEventListener('keydown', function (evt) {
-    if (evt.key === window.constants.ENTER_KEY) {
+    if (evt.key === window.constants.Key.ENTER) {
       window.card.interactionPinHandler(evt);
     }
   });
@@ -97,8 +97,7 @@
         + ', ' + Math.round(mainPin.offsetTop + y);
     },
 
-    // Загрузка страницы в неактивное состояние
-    loadInactivePage: function () {
+    deleteAllPins: function () {
       var selectAllPins = similarListElement.querySelectorAll('.map__pin--mark');
 
       // обработчик активации карты при нажатии на ENTER
@@ -110,7 +109,11 @@
           pin.remove();
         });
       }
+    },
 
+    // Загрузка страницы в неактивное состояние
+    loadInactivePage: function () {
+      window.map.deleteAllPins();
       window.card.closeMapCard();
 
       mapBlock.classList.add('map--faded');
