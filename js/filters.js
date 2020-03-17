@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var MAX_ARRAY_LENGTH = 5;
   var mapFilters = document.querySelector('.map__filters');
 
   var filterChangeHandler = function (evt) {
@@ -13,14 +12,13 @@
     window.map.deleteAllPins();
 
     window.pin.pinsCopy = window.pin.pins.filter(function (pin) {
+      if (evt.target.value === 'any') {
+        return window.pin.pins;
+      }
       return pin.offer.type === evt.target.value;
     });
 
     // console.log(window.pin.pinsCopy);
-
-    if (window.pin.pinsCopy.length > MAX_ARRAY_LENGTH) {
-      window.pin.pinsCopy.length = MAX_ARRAY_LENGTH;
-    }
 
     window.map.createPins(window.pin.pinsCopy);
   };
@@ -30,5 +28,4 @@
   window.filters = {
 
   };
-
 })();

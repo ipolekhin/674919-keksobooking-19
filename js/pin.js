@@ -56,7 +56,7 @@
     // console.log('данные загружены');
     window.pin = {
       pins: data,
-      pinsCopy: data,
+      pinsCopy: '',
     };
   };
 

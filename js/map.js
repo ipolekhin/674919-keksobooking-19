@@ -61,10 +61,18 @@
   window.move.mainPin();
 
   window.map = {
-    // Функция отрисовки похожих объявлений
+    // Функция отрисовки похожих объявлений не более 5
     createPins: function (data) {
+      window.pin.pinsCopy = data.map(function (pins) {
+        return pins;
+      });
+
+      if (window.pin.pinsCopy.length > window.constants.MAX_ARRAY_LENGTH) {
+        window.pin.pinsCopy.length = window.constants.MAX_ARRAY_LENGTH;
+      }
+
       // В цикле собираем шаблон с метками в нашем фрагменте
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < window.pin.pinsCopy.length; i++) {
         fragmentPins.appendChild(renderPin(data[i], i));
       }
 
