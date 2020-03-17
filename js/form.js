@@ -14,50 +14,44 @@
   var roomNumber = addForm.querySelector('#room_number');
   var capacity = addForm.querySelector('#capacity');
 
+  var MAX_ROOMS_VALUE = '100';
+  var CAPACITY_VALUE = '0';
+  // Словарь
+  var classListPriceOfType = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000,
+  };
+
   // Временно активируем карту, чтобы тестить форму!!!!!
   // window.map.activationButtonClickHandler();
 
   var checkTitle = function (evt) {
     if (evt.target.validity.tooShort) {
-      evt.target.setCustomValidity('Минимальная длина — 30 символов');
+      evt.target.setCustomValidity(window.message.FormError.MIN_SIMBOL);
     } else if (evt.target.validity.tooLong) {
-      evt.target.setCustomValidity('Максимальная длина — 100 символов');
+      evt.target.setCustomValidity(window.message.FormError.MAX_SIMBOL);
     } else if (evt.target.validity.valueMissing) {
-      evt.target.setCustomValidity('Обязательное поле');
+      evt.target.setCustomValidity(window.message.FormError.REQUIRED_FIELD);
     } else {
       evt.target.setCustomValidity('');
     }
   };
 
   var checkType = function (evt) {
-    switch (evt.target.value) {
-      case 'bungalo':
-        inputPriceForm.min = 0;
-        break;
-      case 'flat':
-        inputPriceForm.min = 1000;
-        break;
-      case 'house':
-        inputPriceForm.min = 5000;
-        break;
-      case 'palace':
-        inputPriceForm.min = 10000;
-        break;
-      default:
-        inputPriceForm.min = 1000;
-        break;
-    }
+    inputPriceForm.min = classListPriceOfType[evt.target.value];
   };
 
   var checkPrice = function (evt) {
     if (evt.target.validity.rangeUnderflow) {
-      evt.target.setCustomValidity('Минимальное значение — ' + evt.target.min);
+      evt.target.setCustomValidity(window.message.FormError.MIN_PRICE + evt.target.min);
     } else if (evt.target.validity.rangeOverflow) {
-      evt.target.setCustomValidity('Максимальное значение — 1 000 000');
+      evt.target.setCustomValidity(window.message.FormError.MAX_PRICE);
     } else if (evt.target.validity.typeMismatch) {
-      evt.target.setCustomValidity('Числовое поле');
+      evt.target.setCustomValidity(window.message.FormError.NUMERIC_FIELD);
     } else if (evt.target.validity.valueMissing) {
-      evt.target.setCustomValidity('Обязательное поле');
+      evt.target.setCustomValidity(window.message.FormError.REQUIRED_FIELD);
     } else {
       evt.target.setCustomValidity('');
     }
@@ -72,11 +66,11 @@
   };
 
   var checkRoomNumber = function () {
-    if (roomNumber.value === '100' && capacity.value === '0') {
+    if (roomNumber.value === MAX_ROOMS_VALUE && capacity.value === CAPACITY_VALUE) {
       roomNumber.setCustomValidity('');
       capacity.setCustomValidity('');
     } else if (roomNumber.value !== capacity.value) {
-      roomNumber.setCustomValidity('Количество комнат должно быть равно количеству гостей!!!');
+      roomNumber.setCustomValidity(window.message.FormError.ROOM);
       capacity.setCustomValidity('');
     } else {
       roomNumber.setCustomValidity('');
@@ -85,11 +79,11 @@
   };
 
   var checkCapacity = function () {
-    if (roomNumber.value === '100' && capacity.value === '0') {
+    if (roomNumber.value === MAX_ROOMS_VALUE && capacity.value === CAPACITY_VALUE) {
       capacity.setCustomValidity('');
       roomNumber.setCustomValidity('');
     } else if (capacity.value !== roomNumber.value) {
-      capacity.setCustomValidity('Количество гостей должно быть равно количеству комнат!!!');
+      capacity.setCustomValidity(window.message.FormError.CAPACITY);
       roomNumber.setCustomValidity('');
     } else {
       capacity.setCustomValidity('');
@@ -131,12 +125,12 @@
   // console.log(addForm);
 
   var startButtonsInteractive = function () {
-    submitButton.textContent = 'Данные отправляются...';
+    submitButton.textContent = window.message.Buttons.SEND;
     submitButton.disabled = true;
   };
 
   var endButtonsInteractive = function () {
-    submitButton.textContent = 'Опубликовать';
+    submitButton.textContent = window.message.Buttons.DEFAULT;
     submitButton.disabled = false;
   };
 

@@ -20,11 +20,11 @@
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      onError(window.message.Request.ERROR);
     });
 
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      onError(window.message.Request.TIMEOUT + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIMEOUT_IN_MS;

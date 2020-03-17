@@ -35,16 +35,16 @@
             y: MouseMoveEvent.clientY
           };
 
-          if (shiftTop < window.constants.BORDER_TOP) {
-            shiftTop = window.constants.BORDER_TOP;
-          } else if (shiftTop > window.constants.BORDER_BOTTOM) {
-            shiftTop = window.constants.BORDER_BOTTOM;
+          if (shiftTop < window.constants.Border.TOP) {
+            shiftTop = window.constants.Border.TOP;
+          } else if (shiftTop > window.constants.Border.BOTTOM) {
+            shiftTop = window.constants.Border.BOTTOM;
           }
 
-          if (shiftLeft < window.constants.BORDER_LEFT) {
-            shiftLeft = window.constants.BORDER_LEFT;
-          } else if (shiftLeft > window.constants.BORDER_RIGHT - window.constants.WIDTH_MAIN_PIN) {
-            shiftLeft = window.constants.BORDER_RIGHT - window.constants.WIDTH_MAIN_PIN;
+          if (shiftLeft < window.constants.Border.LEFT) {
+            shiftLeft = window.constants.Border.LEFT;
+          } else if (shiftLeft > window.constants.Border.RIGHT - window.constants.WIDTH_MAIN_PIN) {
+            shiftLeft = window.constants.Border.RIGHT - window.constants.WIDTH_MAIN_PIN;
           }
 
           pin.style.top = shiftTop + 'px';

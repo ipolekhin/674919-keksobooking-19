@@ -25,8 +25,8 @@
     var location = {};
     for (var i = 0; i < 8; i++) {
       location = {
-        x: (generateNumbersOfRange(window.constants.BORDER_LEFT, window.constants.BORDER_RIGHT) - window.data.WIDTH_PIN / 2),
-        y: (generateNumbersOfRange(window.constants.BORDER_TOP, window.constants.BORDER_BOTTOM) - window.data.HEIGHT_PIN),
+        x: (generateNumbersOfRange(window.constants.Border.LEFT, window.constants.Border.RIGHT) - window.data.WIDTH_PIN / 2),
+        y: (generateNumbersOfRange(window.constants.Border.TOP, window.constants.Border.BOTTOM) - window.data.HEIGHT_PIN),
       };
       pins.push({
         'author': {
@@ -56,6 +56,7 @@
     // console.log('данные загружены');
     window.pin = {
       pins: data,
+      pinsCopy: '',
     };
   };
 

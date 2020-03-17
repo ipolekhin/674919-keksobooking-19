@@ -33,20 +33,9 @@
     return pinElement;
   };
 
-  // Функция отрисовки похожих объявлений
-  var createPins = function () {
-    // В цикле собираем шаблон с метками в нашем фрагменте
-    for (var i = 0; i < window.pin.pins.length; i++) {
-      fragmentPins.appendChild(renderPin(window.pin.pins[i], i));
-    }
-
-    // Добавляем итоговый DOM элемент fragmentPins на страницу.
-    similarListElement.appendChild(fragmentPins);
-  };
-
   // Активация карты и формы и создаем обрабочтки move на главный pin
   var mapActivation = function (evt) {
-    if (evt.key === window.constants.ENTER_KEY) {
+    if (evt.key === window.constants.Key.ENTER) {
       window.map.activationButtonClickHandler();
       mainPin.removeEventListener('keydown', mapActivation);
     }
@@ -59,7 +48,7 @@
   });
 
   similarListElement.addEventListener('keydown', function (evt) {
-    if (evt.key === window.constants.ENTER_KEY) {
+    if (evt.key === window.constants.Key.ENTER) {
       window.card.interactionPinHandler(evt);
     }
   });
@@ -72,6 +61,25 @@
   window.move.mainPin();
 
   window.map = {
+    // Функция отрисовки похожих объявлений не более 5
+    createPins: function (data) {
+      window.pin.pinsCopy = data.map(function (pins) {
+        return pins;
+      });
+
+      if (window.pin.pinsCopy.length > window.constants.MAX_ARRAY_LENGTH) {
+        window.pin.pinsCopy.length = window.constants.MAX_ARRAY_LENGTH;
+      }
+
+      // В цикле собираем шаблон с метками в нашем фрагменте
+      for (var i = 0; i < window.pin.pinsCopy.length; i++) {
+        fragmentPins.appendChild(renderPin(data[i], i));
+      }
+
+      // Добавляем итоговый DOM элемент fragmentPins на страницу.
+      similarListElement.appendChild(fragmentPins);
+    },
+
     activationButtonClickHandler: function () {
       // Находим блок .map и убираем класс .map--faded
       mapBlock.classList.remove('map--faded');
@@ -82,7 +90,7 @@
       // В функцию передаем значение в активном состояние
       window.form.fillInputAdress(window.map.getCoordinateOfPin(true));
       // Вызываем функцию отрисовки pins (маркеры объявлений)
-      createPins();
+      window.map.createPins(window.pin.pins);
     },
 
     // Вычисление координаты
@@ -97,8 +105,7 @@
         + ', ' + Math.round(mainPin.offsetTop + y);
     },
 
-    // Загрузка страницы в неактивное состояние
-    loadInactivePage: function () {
+    deleteAllPins: function () {
       var selectAllPins = similarListElement.querySelectorAll('.map__pin--mark');
 
       // обработчик активации карты при нажатии на ENTER
@@ -110,7 +117,11 @@
           pin.remove();
         });
       }
+    },
 
+    // Загрузка страницы в неактивное состояние
+    loadInactivePage: function () {
+      window.map.deleteAllPins();
       window.card.closeMapCard();
 
       mapBlock.classList.add('map--faded');
@@ -123,5 +134,4 @@
   };
 
   window.map.loadInactivePage();
-
 })();

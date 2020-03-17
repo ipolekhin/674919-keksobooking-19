@@ -35,7 +35,6 @@
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
   ];
 
-
   window.data = {
     WIDTH_PIN: WIDTH_PIN,
     HEIGHT_PIN: HEIGHT_PIN,

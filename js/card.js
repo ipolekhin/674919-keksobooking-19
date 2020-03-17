@@ -7,6 +7,14 @@
     .querySelector('.map__card');
   var fragmentCard = document.createDocumentFragment();
 
+  // Словарь
+  var classListType = {
+    'flat': 'Квартира',
+    'bungalo': 'Бунгало',
+    'house': 'Дом',
+    'palace': 'Дворец',
+  };
+
   var addTitleToCard = function (cardElement, pin) {
     cardElement.querySelector('.popup__title').textContent = pin.offer.title;
   };
@@ -20,22 +28,7 @@
   };
 
   var addTypeToCard = function (cardElement, pin) {
-    var offerType = pin.offer.type;
-    switch (offerType) {
-      case 'flat':
-        offerType = 'Квартира';
-        break;
-      case 'bungalo':
-        offerType = 'Бунгало';
-        break;
-      case 'house':
-        offerType = 'Дом';
-        break;
-      default:
-        offerType = 'Дворец';
-        break;
-    }
-    cardElement.querySelector('.popup__type').textContent = offerType;
+    cardElement.querySelector('.popup__type').textContent = classListType[pin.offer.type];
   };
 
   var addRoomsAndGuestsToCard = function (cardElement, pin) {
@@ -92,14 +85,14 @@
   };
 
   var popupEscHendler = function (evt) {
-    if (evt.key === window.constants.ESC_KEY) {
+    if (evt.key === window.constants.Key.ESC) {
       window.card.closeMapCard();
     }
   };
 
   // Открыть карточку объявления
   var openMapCard = function (numberPin) {
-    fragmentCard.appendChild(window.card.cardPreview(window.pin.pins[numberPin]));
+    fragmentCard.appendChild(window.card.cardPreview(window.pin.pinsCopy[numberPin]));
 
     // Добавляем итоговый DOM элемент fragmentCard на страницу перед блоком .map__filters-container
     mapBlock.insertBefore(fragmentCard, document.querySelector('.map__filters-container'));
@@ -113,7 +106,7 @@
     });
 
     popupClose.addEventListener('keydown', function (evt) {
-      if (evt.key === window.constants.ENTER_KEY) {
+      if (evt.key === window.constants.Key.ENTER) {
         window.card.closeMapCard();
       }
     });
