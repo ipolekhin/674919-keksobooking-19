@@ -55,11 +55,27 @@
 
   var addFeatureToCard = function (cardElement, pin) {
     var popupFeature = cardElement.querySelectorAll('.popup__feature');
-    for (var i = 0; i < popupFeature.length; i++) {
-      if (!pin.offer.features[i]) {
-        cardElement.querySelector('.popup__features').removeChild(popupFeature[i]);
+    var flag = false;
+    var Array = '';
+    popupFeature.forEach(function (itemList) {
+      flag = false;
+      pin.offer.features.forEach(function (item) {
+        Array = new RegExp(item).test(itemList.className);
+        if (Array) {
+          flag = true;
+        }
+      });
+
+      if (!flag) {
+        cardElement.querySelector('.popup__features').removeChild(itemList);
       }
-    }
+    });
+    // for (var i = 0; i < popupFeature.length; i++) {
+    //
+    //   if (!pin.offer.features[i]) {
+    //     cardElement.querySelector('.popup__features').removeChild(popupFeature[i]);
+    //   }
+    // }
   };
 
   var addDescriptionToCard = function (cardElement, pin) {
