@@ -113,7 +113,6 @@
 
       if (selectAllPins) {
         selectAllPins.forEach(function (pin) {
-          // console.log(mark);
           pin.remove();
         });
       }
@@ -121,12 +120,15 @@
 
     // Загрузка страницы в неактивное состояние
     loadInactivePage: function () {
+      // Удалить все метки с карты
       window.map.deleteAllPins();
+      // Закрыть карточку объявления
       window.card.closeMapCard();
 
       mapBlock.classList.add('map--faded');
       addForm.classList.add('ad-form--disabled');
-      // Блокируем все fieldset элементы
+      window.form.resetForm();
+      // Блокируем все элементы form
       window.form.inactiveState(true);
       setZeroCoordinateOfPin();
       window.form.fillInputAdress(window.map.getCoordinateOfPin());

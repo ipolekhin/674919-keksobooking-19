@@ -1,10 +1,14 @@
 'use strict';
 
 (function () {
+  var mapFilters = document.querySelector('.map__filters');
   var addForm = document.querySelector('.ad-form');
   var submitButton = addForm.querySelector('.ad-form__submit');
   var resetButton = addForm.querySelector('.ad-form__reset');
   var fieldset = addForm.querySelectorAll('fieldset');
+  var fieldsetFilter = mapFilters.querySelector('fieldset');
+  var selectFilter = mapFilters.querySelectorAll('select');
+  var fieldList = [];
   var ipnutAdress = addForm.querySelector('#address');
   var inputTitleForm = addForm.querySelector('#title');
   var selectTypeForm = addForm.querySelector('#type');
@@ -13,7 +17,6 @@
   var timeOut = addForm.querySelector('#timeout');
   var roomNumber = addForm.querySelector('#room_number');
   var capacity = addForm.querySelector('#capacity');
-
   var MAX_ROOMS_VALUE = '100';
   var CAPACITY_VALUE = '0';
   // Словарь
@@ -23,9 +26,6 @@
     'house': 5000,
     'palace': 10000,
   };
-
-  // Временно активируем карту, чтобы тестить форму!!!!!
-  // window.map.activationButtonClickHandler();
 
   var checkTitle = function (evt) {
     if (evt.target.validity.tooShort) {
@@ -41,6 +41,7 @@
 
   var checkType = function (evt) {
     inputPriceForm.min = classListPriceOfType[evt.target.value];
+    inputPriceForm.placeholder = classListPriceOfType[evt.target.value];
   };
 
   var checkPrice = function (evt) {
@@ -69,7 +70,10 @@
     if (roomNumber.value === MAX_ROOMS_VALUE && capacity.value === CAPACITY_VALUE) {
       roomNumber.setCustomValidity('');
       capacity.setCustomValidity('');
-    } else if (roomNumber.value !== capacity.value) {
+    } else if (roomNumber.value === MAX_ROOMS_VALUE || capacity.value === CAPACITY_VALUE) {
+      roomNumber.setCustomValidity(window.message.FormError.NOT_ROOM);
+      capacity.setCustomValidity('');
+    } else if (roomNumber.value < capacity.value) {
       roomNumber.setCustomValidity(window.message.FormError.ROOM);
       capacity.setCustomValidity('');
     } else {
@@ -82,7 +86,10 @@
     if (roomNumber.value === MAX_ROOMS_VALUE && capacity.value === CAPACITY_VALUE) {
       capacity.setCustomValidity('');
       roomNumber.setCustomValidity('');
-    } else if (capacity.value !== roomNumber.value) {
+    } else if (roomNumber.value === MAX_ROOMS_VALUE || capacity.value === CAPACITY_VALUE) {
+      capacity.setCustomValidity(window.message.FormError.NOT_ROOM);
+      roomNumber.setCustomValidity('');
+    } else if (capacity.value > roomNumber.value) {
       capacity.setCustomValidity(window.message.FormError.CAPACITY);
       roomNumber.setCustomValidity('');
     } else {
@@ -122,7 +129,6 @@
   };
 
   addForm.addEventListener('change', formChangeHandler);
-  // console.log(addForm);
 
   var startButtonsInteractive = function () {
     submitButton.textContent = window.message.Buttons.SEND;
@@ -149,9 +155,7 @@
 
   addForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-
     startButtonsInteractive();
-
     window.upload(new FormData(addForm), onSuccess, onError);
   });
 
@@ -159,20 +163,49 @@
     setTimeout(window.map.loadInactivePage, 500);
   });
 
+  var pushInArray = function (list) {
+    list.forEach(function (item) {
+      fieldList.push(item);
+    });
+  };
+
+  // Коллекция полей формы
+  (function () {
+    pushInArray(fieldset);
+    pushInArray(selectFilter);
+
+    fieldList.push(fieldsetFilter);
+  })();
+
+  var setAttributeDisabled = function (item, disabled) {
+    item.setAttribute('disabled', disabled);
+  };
+
+  var removeAttributeDisabled = function (item) {
+    item.removeAttribute('disabled');
+  };
+
   window.form = {
-    // Функция блокирвоки или разблокировки полей форм заполнения информации об объявлении .ad-form
+    // Функция блокирвоки или разблокировки полей форм
     inactiveState: function (disabled) {
-      for (var i = 0; i < fieldset.length; i++) {
+      fieldList.forEach(function (item) {
         if (disabled) {
-          fieldset[i].setAttribute('disabled', disabled);
+          setAttributeDisabled(item, disabled);
         } else {
-          fieldset[i].removeAttribute('disabled');
+          removeAttributeDisabled(item);
         }
-      }
+      });
     },
 
     fillInputAdress: function (value) {
       ipnutAdress.value = value;
+    },
+
+    resetForm: function () {
+      mapFilters.reset();
+      addForm.reset();
+
+      inputPriceForm.placeholder = classListPriceOfType[selectTypeForm.value];
     },
   };
 

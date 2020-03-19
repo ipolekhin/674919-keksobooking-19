@@ -61,7 +61,6 @@
 
           if (!dragged && mapBlock.classList.contains('map--faded')) {
             window.map.activationButtonClickHandler();
-            // console.log(window.pin.pins);
           }
         };
 

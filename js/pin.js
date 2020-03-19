@@ -53,7 +53,6 @@
   };
 
   var recordData = function (data) {
-    // console.log('данные загружены');
     window.pin = {
       pins: data,
       pinsCopy: '',
@@ -70,7 +69,4 @@
   };
 
   window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);
-
-  // Выведим в консоль заполненный массив из сгенерированных JS объектов
-  // console.log(window.pin.pins);
 })();

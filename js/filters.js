@@ -2,6 +2,7 @@
 
 (function () {
   var mapFilters = document.querySelector('.map__filters');
+  var mapFeaturesList;
   var classListPrice = {
     'low': 10000,
     'high': 50000,
@@ -13,8 +14,6 @@
     'housing-rooms': 'any',
     'housing-guests': 'any',
   };
-
-  var checkboxList = [];
 
   var filterByType = function (data, select) {
     window.pin.pinsCopy = data
@@ -61,16 +60,17 @@
       });
   };
 
-  var filterByFeatures = function (data, evt) {
-    if (checkboxList.indexOf(evt.target.value) === -1) {
-      checkboxList.push(evt.target.value);
-    } else {
-      checkboxList.splice(checkboxList.indexOf(evt.target.value), 1);
-    }
+  var filterByFeatures = function (data) {
+    var checkboxList = [];
+
+    mapFeaturesList = mapFilters.querySelectorAll('input:checked');
+    mapFeaturesList.forEach(function (item) {
+      checkboxList.push(item.value);
+    });
 
     if (checkboxList.length > 0) {
       checkboxList.forEach(function (check) {
-        window.pin.pinsCopy = window.pin.pinsCopy
+        window.pin.pinsCopy = data
           .filter(function (item) {
             return item.offer.features.includes(check);
           });
@@ -98,8 +98,6 @@
     if (evt.target.matches('input[type="checkbox"]')) {
       filterByFeatures(window.pin.pinsCopy, evt);
     }
-
-    // console.log(window.pin.pinsCopy);
 
     window.map.createPins(window.pin.pinsCopy);
   });
