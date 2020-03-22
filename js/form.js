@@ -1,14 +1,16 @@
 'use strict';
 
 (function () {
+  var MAX_ROOMS_VALUE = '100';
+  var CAPACITY_VALUE = '0';
   var mapFilters = document.querySelector('.map__filters');
   var addForm = document.querySelector('.ad-form');
   var submitButton = addForm.querySelector('.ad-form__submit');
   var resetButton = addForm.querySelector('.ad-form__reset');
-  var fieldset = addForm.querySelectorAll('fieldset');
-  var fieldsetFilter = mapFilters.querySelector('fieldset');
-  var selectFilter = mapFilters.querySelectorAll('select');
-  var fieldList = [];
+  var fieldsAdForm = addForm.querySelectorAll('fieldset');
+  var fieldFilter = mapFilters.querySelector('fieldset');
+  var fieldsFilter = mapFilters.querySelectorAll('select');
+  var fieldsList = [];
   var ipnutAdress = addForm.querySelector('#address');
   var inputTitleForm = addForm.querySelector('#title');
   var selectTypeForm = addForm.querySelector('#type');
@@ -17,8 +19,6 @@
   var timeOut = addForm.querySelector('#timeout');
   var roomNumber = addForm.querySelector('#room_number');
   var capacity = addForm.querySelector('#capacity');
-  var MAX_ROOMS_VALUE = '100';
-  var CAPACITY_VALUE = '0';
   // Словарь
   var classListPriceOfType = {
     'bungalo': 0,
@@ -29,17 +29,21 @@
 
   var checkTitle = function (evt) {
     if (evt.target.validity.tooShort) {
+      // inputTitleForm.style.border = '2px solid green';
       evt.target.setCustomValidity(window.message.FormError.MIN_SIMBOL);
     } else if (evt.target.validity.tooLong) {
+      // inputTitleForm.style.border = '2px solid green';
       evt.target.setCustomValidity(window.message.FormError.MAX_SIMBOL);
     } else if (evt.target.validity.valueMissing) {
+      // inputTitleForm.style.border = '2px solid green';
       evt.target.setCustomValidity(window.message.FormError.REQUIRED_FIELD);
     } else {
       evt.target.setCustomValidity('');
+      inputTitleForm.style.border = window.constants.Style.BORDER_NONE;
     }
   };
 
-  var checkType = function (evt) {
+  var setMinValueForPrice = function (evt) {
     inputPriceForm.min = classListPriceOfType[evt.target.value];
     inputPriceForm.placeholder = classListPriceOfType[evt.target.value];
   };
@@ -55,6 +59,7 @@
       evt.target.setCustomValidity(window.message.FormError.REQUIRED_FIELD);
     } else {
       evt.target.setCustomValidity('');
+      inputPriceForm.style.border = window.constants.Style.BORDER_NONE;
     }
   };
 
@@ -104,7 +109,7 @@
     }
 
     if (evt.target.id === selectTypeForm.id) {
-      checkType(evt);
+      setMinValueForPrice(evt);
     }
 
     if (evt.target.id === inputPriceForm.id) {
@@ -153,8 +158,18 @@
     endButtonsInteractive();
   };
 
+  var inputLoadErrorStyleHandler = function (value) {
+    value.addEventListener('invalid', function () {
+      value.style.border = window.constants.Style.BORDER_RED;
+    });
+  };
+
+  inputLoadErrorStyleHandler(inputTitleForm);
+  inputLoadErrorStyleHandler(inputPriceForm);
+
   addForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
+
     startButtonsInteractive();
     window.upload(new FormData(addForm), onSuccess, onError);
   });
@@ -165,16 +180,14 @@
 
   var pushInArray = function (list) {
     list.forEach(function (item) {
-      fieldList.push(item);
+      fieldsList.push(item);
     });
   };
 
   // Коллекция полей формы
   (function () {
-    pushInArray(fieldset);
-    pushInArray(selectFilter);
-
-    fieldList.push(fieldsetFilter);
+    pushInArray(fieldsFilter);
+    fieldsList.push(fieldFilter);
   })();
 
   var setAttributeDisabled = function (item, disabled) {
@@ -185,27 +198,38 @@
     item.removeAttribute('disabled');
   };
 
+  var iterateArray = function (array, disabled) {
+    array.forEach(function (item) {
+      if (disabled) {
+        setAttributeDisabled(item, disabled);
+      } else {
+        removeAttributeDisabled(item);
+      }
+    });
+  };
+
   window.form = {
-    // Функция блокирвоки или разблокировки полей форм
-    inactiveState: function (disabled) {
-      fieldList.forEach(function (item) {
-        if (disabled) {
-          setAttributeDisabled(item, disabled);
-        } else {
-          removeAttributeDisabled(item);
-        }
-      });
+    // Функция блокирвоки или разблокировки полей формы объявления
+    inactiveStateAd: function (disabled) {
+      iterateArray(fieldsAdForm, disabled);
     },
 
-    fillInputAdress: function (value) {
+    // Функция блокирвоки или разблокировки фильтра
+    inactiveStateFilters: function (disabled) {
+      iterateArray(fieldsList, disabled);
+    },
+
+    fillInputAddress: function (value) {
       ipnutAdress.value = value;
     },
 
-    resetForm: function () {
+    reset: function () {
       mapFilters.reset();
       addForm.reset();
 
       inputPriceForm.placeholder = classListPriceOfType[selectTypeForm.value];
+      inputPriceForm.style.border = window.constants.Style.BORDER_NONE;
+      inputTitleForm.style.border = window.constants.Style.BORDER_NONE;
     },
   };
 

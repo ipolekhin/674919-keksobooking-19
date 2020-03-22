@@ -79,24 +79,15 @@
     }
   };
 
-  var addFeatureToCard = function (cardElement, pin) {
+  var addFeaturesToCard = function (cardElement, pin) {
     if (!pin.offer.features.length) {
       cardElement.querySelector('.popup__features').classList.add('hidden');
     } else {
-      var popupFeature = cardElement.querySelectorAll('.popup__feature');
-      var flag = false;
-      var Array = '';
-      popupFeature.forEach(function (itemList) {
-        flag = false;
-        pin.offer.features.forEach(function (item) {
-          Array = new RegExp(item).test(itemList.className);
-          if (Array) {
-            flag = true;
-          }
-        });
-
-        if (!flag) {
-          cardElement.querySelector('.popup__features').removeChild(itemList);
+      var popupFeatures = cardElement.querySelectorAll('.popup__feature');
+      popupFeatures.forEach(function (features) {
+        var result = features.className.split('--').pop();
+        if (!pin.offer.features.includes(result)) {
+          cardElement.querySelector('.popup__features').removeChild(features);
         }
       });
     }
@@ -119,8 +110,8 @@
       var popupPhoto = popupPhotos.querySelector('.popup__photo');
       for (var i = 0; i < offerPhotos.length; i++) {
         if (i > 0) {
-          var ClonePopupPhoto = popupPhotos.appendChild(popupPhoto.cloneNode());
-          ClonePopupPhoto.src = offerPhotos[i];
+          var clonePopupPhoto = popupPhotos.appendChild(popupPhoto.cloneNode());
+          clonePopupPhoto.src = offerPhotos[i];
         } else {
           popupPhoto.src = offerPhotos[i];
         }
@@ -138,13 +129,13 @@
 
   var popupEscHendler = function (evt) {
     if (evt.key === window.constants.Key.ESC) {
-      window.card.closeMapCard();
+      window.card.close();
     }
   };
 
   // Открыть карточку объявления
   var openMapCard = function (numberPin) {
-    fragmentCard.appendChild(window.card.cardPreview(window.pin.pinsCopy[numberPin]));
+    fragmentCard.appendChild(window.card.preview(window.pin.pinsCopy[numberPin]));
 
     // Добавляем итоговый DOM элемент fragmentCard на страницу перед блоком .map__filters-container
     mapBlock.insertBefore(fragmentCard, document.querySelector('.map__filters-container'));
@@ -153,13 +144,13 @@
       .querySelector('.popup__close');
     popupClose.addEventListener('mousedown', function (evt) {
       if (evt.button === 0) {
-        window.card.closeMapCard();
+        window.card.close();
       }
     });
 
     popupClose.addEventListener('keydown', function (evt) {
       if (evt.key === window.constants.Key.ENTER) {
-        window.card.closeMapCard();
+        window.card.close();
       }
     });
 
@@ -175,7 +166,7 @@
   };
 
   window.card = {
-    cardPreview: function (pin) {
+    preview: function (pin) {
       var cardElement = cardPreviewTemplate.cloneNode(true);
 
       addTitleToCard(cardElement, pin);
@@ -184,7 +175,7 @@
       addTypeToCard(cardElement, pin);
       addRoomsAndGuestsToCard(cardElement, pin);
       addCheckToCard(cardElement, pin);
-      addFeatureToCard(cardElement, pin);
+      addFeaturesToCard(cardElement, pin);
       addDescriptionToCard(cardElement, pin);
       addPhotosToCard(cardElement, pin);
       addAvatarToCard(cardElement, pin);
@@ -195,11 +186,12 @@
     interactionPinHandler: function (evt) {
       // Открытие карточки объявления
       if (evt.target && evt.target.closest('button[type="button"]')) {
-        window.card.closeMapCard();
+        var numberPin;
+        window.card.close();
 
         if (evt.target.src) {
           addClassMapPinActive(evt.target.closest('button[type="button"]'));
-          var numberPin = parseInt(evt.target.dataset.number, 10);
+          numberPin = parseInt(evt.target.dataset.number, 10);
         } else {
           addClassMapPinActive(evt.target);
           numberPin = parseInt(evt.target.children[0].dataset.number, 10);
@@ -210,7 +202,7 @@
     },
 
     // Закрыть карточку объявления
-    closeMapCard: function () {
+    close: function () {
       var pinsList = mapBlock.querySelectorAll('.map__pin');
       pinsList.forEach(function (item) {
         if (item.classList.contains('map__pin--active')) {
