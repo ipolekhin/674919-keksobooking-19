@@ -58,7 +58,7 @@
       document.removeEventListener('mouseup', mouseUpHandler);
 
       if (!dragged && mapBlock.classList.contains('map--faded') && mouseUpEvent.button === 0) {
-        window.map.activationPage();
+        window.map.loadActivePage();
         pin.removeEventListener('keydown', window.map.activationClickHandler);
       }
     };

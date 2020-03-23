@@ -7,10 +7,10 @@
 
   var fileChooserAvatar = document.querySelector('.ad-form__field input[type=file]');
   var previewAvatar = document.querySelector('.ad-form-header__preview img');
+  var defaultPreviewAvatar = previewAvatar.src;
   var fileChooserPhotoOfHouse = document.querySelector('.ad-form__upload input[type=file]');
   var previewPhotoOfHouse = document.querySelector('.ad-form__photo');
   var imageElementPhotoOfHouse = previewPhotoOfHouse.querySelector('img');
-
 
   fileChooserAvatar.addEventListener('change', function () {
     var file = fileChooserAvatar.files[0];
@@ -64,4 +64,16 @@
     }
   });
 
+  window.photo = {
+    clean: function () {
+      // Удаление фото аватара
+      previewAvatar.src = defaultPreviewAvatar;
+
+      // Удаление элемента img и обнуление перменной
+      if (imageElementPhotoOfHouse !== null) {
+        previewPhotoOfHouse.removeChild(imageElementPhotoOfHouse);
+        imageElementPhotoOfHouse = null;
+      }
+    },
+  };
 })();

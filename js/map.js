@@ -56,7 +56,7 @@
     // Активация карты и формы и создаем обрабочтки move на главный pin
     activationClickHandler: function (evt) {
       if (evt.key === window.constants.Key.ENTER) {
-        window.map.activationPage();
+        window.map.loadActivePage();
         mainPin.removeEventListener('keydown', window.map.activationClickHandler);
       }
     },
@@ -81,7 +81,7 @@
     },
 
     // Загрузка активного состояния страницы
-    activationPage: function () {
+    loadActivePage: function () {
       // Начать загрузку данных
       window.pin.loadData();
       // Находим блок .map и убираем класс .map--faded
@@ -89,7 +89,7 @@
       // У формы заполнения информации об объявлении убираем класс ad-form--disabled
       addForm.classList.remove('ad-form--disabled');
       // Разблокируем все fieldset элементы
-      window.form.inactiveStateAd(false);
+      window.form.loadStatusOfAd(false);
       // В функцию передаем значение в активном состояние
       window.form.fillInputAddress(window.map.getCoordinateOfPin(true));
     },
@@ -126,11 +126,13 @@
       addForm.classList.add('ad-form--disabled');
       window.form.reset();
       // Блокируем форму объявления
-      window.form.inactiveStateAd(true);
+      window.form.loadStatusOfAd(true);
       // Блокируем фильтр
-      window.form.inactiveStateFilters(true);
+      window.form.loadStatusOfFilters(true);
       setZeroCoordinateOfPin();
       window.form.fillInputAddress(window.map.getCoordinateOfPin());
+      // очищаем картинки в форме
+      window.photo.clean();
     },
   };
 

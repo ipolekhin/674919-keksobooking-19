@@ -7,10 +7,10 @@
   var addForm = document.querySelector('.ad-form');
   var submitButton = addForm.querySelector('.ad-form__submit');
   var resetButton = addForm.querySelector('.ad-form__reset');
-  var fieldsAdForm = addForm.querySelectorAll('fieldset');
+  var AdFormFields = addForm.querySelectorAll('fieldset');
   var fieldFilter = mapFilters.querySelector('fieldset');
-  var fieldsFilter = mapFilters.querySelectorAll('select');
-  var fieldsList = [];
+  var fieldsFilters = mapFilters.querySelectorAll('select');
+  var fieldsLists = [];
   var ipnutAdress = addForm.querySelector('#address');
   var inputTitleForm = addForm.querySelector('#title');
   var selectTypeForm = addForm.querySelector('#type');
@@ -29,13 +29,10 @@
 
   var checkTitle = function (evt) {
     if (evt.target.validity.tooShort) {
-      // inputTitleForm.style.border = '2px solid green';
       evt.target.setCustomValidity(window.message.FormError.MIN_SIMBOL);
     } else if (evt.target.validity.tooLong) {
-      // inputTitleForm.style.border = '2px solid green';
       evt.target.setCustomValidity(window.message.FormError.MAX_SIMBOL);
     } else if (evt.target.validity.valueMissing) {
-      // inputTitleForm.style.border = '2px solid green';
       evt.target.setCustomValidity(window.message.FormError.REQUIRED_FIELD);
     } else {
       evt.target.setCustomValidity('');
@@ -180,14 +177,14 @@
 
   var pushInArray = function (list) {
     list.forEach(function (item) {
-      fieldsList.push(item);
+      fieldsLists.push(item);
     });
   };
 
   // Коллекция полей формы
   (function () {
-    pushInArray(fieldsFilter);
-    fieldsList.push(fieldFilter);
+    pushInArray(fieldsFilters);
+    fieldsLists.push(fieldFilter);
   })();
 
   var setAttributeDisabled = function (item, disabled) {
@@ -210,13 +207,13 @@
 
   window.form = {
     // Функция блокирвоки или разблокировки полей формы объявления
-    inactiveStateAd: function (disabled) {
-      iterateArray(fieldsAdForm, disabled);
+    loadStatusOfAd: function (disabled) {
+      iterateArray(AdFormFields, disabled);
     },
 
     // Функция блокирвоки или разблокировки фильтра
-    inactiveStateFilters: function (disabled) {
-      iterateArray(fieldsList, disabled);
+    loadStatusOfFilters: function (disabled) {
+      iterateArray(fieldsLists, disabled);
     },
 
     fillInputAddress: function (value) {

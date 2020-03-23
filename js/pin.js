@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var MOCKS_LENGTH = 8;
   // Создаем пустой массив
   var pins = [];
 
@@ -10,19 +11,18 @@
   };
 
   // С помощью функции генерируем массив случайной длины
-  var sliceArray = function (array) {
-    return array.slice(0, generateNumbersOfRange(1, array.length));
+  var sliceArray = function (properties) {
+    return properties.slice(0, generateNumbersOfRange(1, properties.length));
   };
 
   // С помощью функции выбираем случайное значение из массива
-  var chooseValueOfArray = function (array) {
-    var length = generateNumbersOfRange(1, array.length);
-    return array[length - 1];
+  var chooseValueOfArray = function (properties) {
+    var length = generateNumbersOfRange(1, properties.length);
+    return properties[length - 1];
   };
 
   // Функция, которая заполняет массив 'pins' данными
   var saveMocksData = function () {
-    var MOCKS_LENGTH = 8;
     var location = {};
 
     for (var i = 0; i < MOCKS_LENGTH; i++) {
@@ -67,7 +67,7 @@
     // Вызываем функцию отрисовки pins с данными моков (маркеры объявлений)
     window.map.drawPins(pins);
     // Активация фильтра
-    window.form.inactiveStateFilters(false);
+    window.form.loadStatusOfFilters(false);
   };
 
   var onSuccess = function (data) {
@@ -75,7 +75,7 @@
     // Вызываем функцию отрисовки pins (маркеры объявлений)
     window.map.drawPins(pins);
     // Активация фильтра
-    window.form.inactiveStateFilters(false);
+    window.form.loadStatusOfFilters(false);
   };
 
   window.pin = {

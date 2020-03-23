@@ -20,7 +20,8 @@
   var selectUniversalFilter = function (item, filterSelect, filterValue) {
     if (item.offer[filterSelect] === filterValue || filterValue === 'any') {
       return true;
-    } else if (typeof filterValue === 'string') {
+    }
+    if (typeof filterValue === 'string') {
       return parseInt(filterValue, 10) === item.offer[filterSelect];
     }
     return false;
@@ -29,11 +30,14 @@
   var filterByPrice = function (item, filterValue) {
     if (filterValue === 'any') {
       return true;
-    } else if (filterValue === 'low') {
+    }
+    if (filterValue === 'low') {
       return item.offer.price < classListPrice.low;
-    } else if (filterValue === 'middle') {
+    }
+    if (filterValue === 'middle') {
       return item.offer.price >= classListPrice.low && item.offer.price <= classListPrice.high;
-    } else if (filterValue === 'high') {
+    }
+    if (filterValue === 'high') {
       return item.offer.price > classListPrice.high;
     }
     return false;

@@ -14,16 +14,18 @@
     .content
     .querySelector('.success');
 
-  var messageCloseClickHandler = function (evt) {
+  var documentClickHandler = function (evt) {
     if (evt.button === 0) {
-      document.removeEventListener('mousedown', messageCloseClickHandler);
+      document.removeEventListener('mousedown', documentClickHandler);
+      document.removeEventListener('keydown', documentEnterPressHandler);
       main.lastChild.remove();
     }
   };
 
-  var messageCloseEnterHandler = function (evt) {
+  var documentEnterPressHandler = function (evt) {
     if (evt.key === window.constants.Key.ESC) {
-      document.removeEventListener('keydown', messageCloseEnterHandler);
+      document.removeEventListener('mousedown', documentClickHandler);
+      document.removeEventListener('keydown', documentEnterPressHandler);
       main.lastChild.remove();
     }
   };
@@ -31,8 +33,8 @@
   var addMessageOnPage = function (template) {
     var addMessage = template.cloneNode(true);
     main.appendChild(addMessage);
-    document.addEventListener('mousedown', messageCloseClickHandler);
-    document.addEventListener('keydown', messageCloseEnterHandler);
+    document.addEventListener('mousedown', documentClickHandler);
+    document.addEventListener('keydown', documentEnterPressHandler);
   };
 
   window.upload = function (data, onSuccess, onError) {
